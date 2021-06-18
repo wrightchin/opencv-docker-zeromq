@@ -1,0 +1,43 @@
+version: "3.8"
+services: 
+    client: 
+        image: client
+        build:
+            context: ./client/
+            dockerfile: Dockerfile 
+        command: python3 -u receiver.py
+        working_dir: /app
+        volumes: 
+            - ./client/receiver.py:/app/receiver.py
+        # ports:
+        #     - "5001:5001"
+        # network_mode: host
+        # networks: 
+        #     - app
+        hostname: client
+            
+    server:
+        image: server
+        build:
+            context: ./server/
+            dockerfile: Dockerfile            
+        devices: 
+            - /dev/video0:/dev/video0
+        command: python3 -u test.py
+        working_dir: /app
+        volumes: 
+            - ./server/test.py:/app/test.py
+            - /tmp/.X11-unix:/tmp/.X11-unix
+        # ports:
+        #     - "5001:5001"
+        environment: 
+            - DISPLAY=$DISPLAY
+        # networks: 
+        #     - app
+        # depends_on: 
+        #     - client
+        hostname: server
+# networks:
+#   app:
+
+    
